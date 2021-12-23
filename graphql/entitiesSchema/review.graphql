@@ -1,0 +1,51 @@
+extend type Mutation {
+    createReview(input: CreateReviewInput! @spread): Review @create
+
+    markReviewsRead(user_id: Int!): Int
+    @field(resolver: "App\\GraphQL\\Mutations\\MarkAsRead@reviews")
+}
+extend type Query {
+    reviews(orderBy: _ @orderBy(columnsEnum: "ReviewColumns")): [Review!]! @paginate(type: PAGINATOR, defaultCount: 10)
+
+    review(id: ID @eq): Review @find
+}
+
+type Review{
+    id: ID!
+    body: String!
+    star: Int!
+    deleted_at: DateTime
+    seen_at: DateTime
+    created_at: DateTime
+    updated_at: DateTime
+    reviewer: User @belongsTo
+    reports: [Report!]! @morphMany(type: PAGINATOR, defaultCount: 10)
+    reviewable: Reviewable! @morphTo
+}
+union Reviewable = Ad | User
+
+
+
+
+input CreateReviewInput {
+    body: String!
+    star: ReviewStar!
+    reviewable: CreateReviewableMorphTo
+    reviewer: CreateReviewerBelongsTo
+}
+input CreateReviewerBelongsTo {
+    connect: ID
+}
+input CreateReviewableMorphTo {
+    connect: ConnectReviewableInput
+    disconnect: Boolean
+    delete: Boolean
+}
+input ConnectReviewableInput {
+    type: ReviewableTypes!
+    id: ID!
+}
+enum ReviewableTypes {
+    ad
+    user
+}

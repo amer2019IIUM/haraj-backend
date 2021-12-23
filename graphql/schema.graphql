@@ -1,0 +1,215 @@
+#import entitiesSchema/*.graphql
+
+"A date string with format `Y-m-d`, e.g. `2011-05-23`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar DateTime
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+enum AdStatus {
+    DRAFT @enum(value: 0)
+    PENDING @enum(value: 1)
+    UNPUBLISHED @enum(value: 2)
+    PUBLISHED @enum(value: 3)
+    SOLD @enum(value: 4)
+}
+enum Gender {
+    MALE @enum(value: "m")
+    FEMALE @enum(value: "f")
+}
+###################( User )############################
+enum UserColumns {
+    ID
+    NAME
+    EMAIL
+    EMAIL_VERIFIED_AT
+    PASSWORD
+    PHONE_NO
+    GENDER
+    CONFIRMED_AT
+    REMEMBER_TOKEN
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Country )############################
+enum CountryColumns {
+    ID
+    CODE
+    NAME
+    PHONE_CODE
+}
+###################( State )############################
+enum StateColumns {
+    ID
+    NAME
+}
+###################( Ad )############################
+enum AdColumns {
+    ID
+    SKU
+    NAME
+    DESCRIPTION
+    PRICE
+    QUANTITY
+    NEGOTIABLE
+    STATUS
+    WARRANTY
+    FAVORITED
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Comment )############################
+enum CommentColumns {
+    ID
+    Body
+    SEEN_AT
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Review )############################
+enum ReviewColumns {
+    ID
+    BODY
+    STAR
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+enum ReviewStar {
+    STAR1 @enum(value: 1)
+    STAR2 @enum(value: 2)
+    STAR3 @enum(value: 3)
+    STAR4 @enum(value: 4)
+    STAR5 @enum(value: 5)
+}
+###################( Message )############################
+enum MessageColumns {
+    ID
+    BODY
+    SEEN_AT
+    FROM_ID
+    TO_ID
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Attachment )############################
+enum AttachmentColumns {
+    ID
+    ATTACHABLE_ID
+    ATTACHABLE_TYPE
+    TYPE
+    PATH
+    DISK_NAME
+    FILE_NAME
+    THUMBNAIL
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+enum AttachmentTypes {
+    PHOTO @enum(value: "photo")
+    DOCUMENT @enum(value: "document")
+    AUDIO @enum(value: "audio")
+    VIDEO @enum(value: "video")
+    OTHERS @enum(value: "others")
+}
+###################( Metadata )############################
+enum MetadataColumns {
+    ID
+    ATTACHABLE_ID
+    ATTACHABLE_TYPE
+    TYPE
+    PATH
+    DISK_NAME
+    FILE_NAME
+    THUMBNAIL
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Report )############################
+enum ReportColumns {
+    ID
+    BODY
+    REPORTABLE_ID
+    REPORTABLE_TYPE
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Setting )############################
+enum SettingColumns {
+    ID
+    KEY
+    VALUE
+    NOTES
+    DISPLAY_NAME
+    DOMAIN
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Taxonomy )############################
+enum TaxonomyColumns {
+    ID
+    TYPE
+    PARENT
+    SORT
+    PUBLISHED_AT
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( TaxonomyContent )############################
+enum TaxonomyContentColumns {
+    ID
+    PARENT_ID
+    TITLE
+    DESCRIPTION
+    LANG
+    ICON
+    PUBLISHED_AT
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Favorite )############################
+enum FavoriteColumns {
+    ID
+    FAVORITEABLE_ID
+    FAVORITEABLE_TYPE
+    USER_ID
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+###################( Review )############################
+enum ReviewColumns {
+    ID
+    BODY
+    STAR
+    DELETED_AT
+    CREATED_AT
+    UPDATED_AT
+}
+enum Languages {
+    en
+    ar
+}
+# Ad
+# Attachment
+# Comment
+# Country
+# Message
+# Metadata
+# Report
+# Setting
+# State
+# Taxonomy
+# Taxonomy_content
+# TODO: User

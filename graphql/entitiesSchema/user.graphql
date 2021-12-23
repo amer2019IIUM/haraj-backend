@@ -1,0 +1,119 @@
+extend type Mutation {
+    sendOTP(phone_no: String @rules(apply: ["required", "unique:users,phone_no", "regex:/(01)[0-9]{9}/"])): Response!
+    @field(resolver: "App\\GraphQL\\Mutations\\PhoneVerificationMutator@sendOTP")
+
+    verifyOTP(verification_code: String!, phone_no: String!): Response!
+    @field(resolver: "App\\GraphQL\\Mutations\\PhoneVerificationMutator@verifyOTP")
+
+    createUser(input: CreateUserInput! @spread): User @create
+
+    updateUser(input: UpdateUserInput! @spread): User @update @guard
+
+    login(input: LoginUserInput! @spread): AccessToken!
+
+    logout: LogoutResponse! @guard
+
+    loginAdmin(input: LoginAdminInput! @spread): AdminAccessToken
+
+    validateEmail(email: String @eq  @rules(apply: ["required", "unique:users,email", "regex:/^.+@.+$/i"])): User @first
+
+    deleteUser(id: ID!): User @delete
+
+    restoreUser(id: ID!): User @restore
+}
+
+extend type Query {
+    users(orderBy: _ @orderBy(columnsEnum: "UserColumns")): [User!]!
+    @paginate(type: PAGINATOR, defaultCount: 10)
+    @softDeletes
+
+    user(id: ID @eq): User @find @softDeletes
+
+    findByPhone(phone_no: String! @eq): User @find
+
+    currentUser: User @auth
+}
+
+type User {
+    id: ID!
+    name: String
+    email: String
+    email_verified_at: DateTime
+    password: String
+    phone_no: String
+    gender: String
+    phone_verified_at: DateTime
+    remember_token: String
+    deleted_at: DateTime
+    created_at: DateTime
+    updated_at: DateTime
+    ads: [Ad!]! @hasMany(type: PAGINATOR, defaultCount: 10)
+    favorites: [Favorite!]! @hasMany(type: PAGINATOR, defaultCount: 10)
+    country: Country @belongsTo
+    state: State @belongsTo
+    from_messages: [Message!]! @hasMany(type: PAGINATOR, defaultCount: 10)
+    to_messages: [Message!]! @hasMany(type: PAGINATOR, defaultCount: 10)
+    comments: [Comment!]! @hasMany(type: PAGINATOR, defaultCount: 10)
+    reviews: [Review!]! @morphMany(type: PAGINATOR, defaultCount: 10)
+    attachments: [Attachment!]! @morphMany(type: PAGINATOR, defaultCount: 10)
+    metadata: [Metadata!]! @morphMany(type: PAGINATOR, defaultCount: 10)
+    reports: [Report!]! @morphMany(type: PAGINATOR, defaultCount: 10)
+}
+input CreateUserInput @validator {
+    name: String
+    phone_no: String
+    email: String
+    gender: String
+    password: String @hash
+    country: CreateCountryBelongsTo
+    state: CreateStateBelongsTo
+}
+input UpdateUserInput @validator {
+    id: ID
+    name: String
+    email: String
+    password: String @hash
+    gender: String
+    country: CreateCountryBelongsTo
+    state: CreateStateBelongsTo
+    attachments: CreateAttachmentBelongsToMany
+}
+input CreateCountryBelongsTo {
+    connect: ID
+}
+input CreateStateBelongsTo {
+    connect: ID
+}
+input LoginUserInput {
+    phone_no: String
+    password: String
+}
+input LoginAdminInput {
+    email: String
+    password: String
+}
+type AccessToken {
+    access_token: String
+    token_type: String
+}
+type AdminAccessToken {
+    access_token: String
+    token_type: String
+    isAdmin: Boolean
+}
+type LogoutResponse {
+    status: LogoutStatus!
+    message: String!
+}
+enum LogoutStatus {
+    """TOKEN_REVOKED"""
+    TOKEN_REVOKED
+}
+type Response {
+    data: ResponseData
+    errors: String
+}
+type ResponseData {
+    status: String
+    message: String
+}

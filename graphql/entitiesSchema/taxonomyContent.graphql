@@ -1,0 +1,67 @@
+extend type Mutation {
+    createTaxonomyContent(input: createTaxonomyContentInput! @spread): TaxonomyContent @create
+
+    updateTaxonomyContent(id: ID!, input: updateTaxonomyContentInput! @spread): TaxonomyContent @update
+
+    deleteTaxonomyContent(id: ID!): TaxonomyContent @delete
+
+    restoreTaxonomyContent(id: ID!): TaxonomyContent @restore
+}
+extend type Query {
+    taxonomyContents(
+        orderBy: _ @orderBy(columnsEnum: "TaxonomyContentColumns")
+        parent: _ @whereHasConditions(columnsEnum: "TaxonomyContentColumns")
+        children: _ @whereHasConditions(columnsEnum: "TaxonomyContentColumns")
+        taxonomy: _ @whereHasConditions(columnsEnum: "TaxonomyColumns")
+        where: _ @whereConditions(columnsEnum: "TaxonomyContentColumns")
+    ): [TaxonomyContent!]! @paginate(type: PAGINATOR, defaultCount: 10)
+    @softDeletes
+
+    taxonomyContent(
+        where: _ @whereConditions(columnsEnum: "TaxonomyContentColumns")
+    ): TaxonomyContent @first
+}
+
+type TaxonomyContent {
+    id: ID!
+    title: String!
+    description: String
+    #    parent: TaxonomyContent @method(name: "parent")
+    parent: TaxonomyContent @belongsTo
+    harajs: [TaxonomyContent!]! @method(name: "harajs")
+    tags: [TaxonomyContent!]! @method(name: "tags")
+    children: [TaxonomyContent!]! @hasMany
+    brands: [TaxonomyContent!]! @hasMany
+    models: [TaxonomyContent!]! @hasMany
+    types: [TaxonomyContent!]! @hasMany
+    lang: String
+    icon: String
+    published_at: DateTime
+    deleted_at: DateTime
+    created_at: DateTime
+    updated_at: DateTime
+    taxonomy: Taxonomy @belongsTo
+    ads: [Ad!]! @belongsToMany
+}
+input createTaxonomyContentInput {
+    title: String!
+    description: String
+    taxonomy: CreateTaxonomyBelongsTo!
+    parent: CreateTaxonomyContentParent
+    icon: String
+    lang: Languages!
+}
+input updateTaxonomyContentInput {
+    title: String
+    description: String
+    taxonomy: CreateTaxonomyBelongsTo
+    parent: CreateTaxonomyContentParent
+    icon: String
+    lang: Languages
+}
+input CreateTaxonomyBelongsTo {
+    connect: ID
+}
+input CreateTaxonomyContentParent {
+    connect: ID
+}

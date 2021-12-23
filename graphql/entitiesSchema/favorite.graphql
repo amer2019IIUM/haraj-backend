@@ -1,0 +1,36 @@
+extend type Mutation {
+    createFavorite(input: CreateFavoriteInput! @spread): Favorite @create @guard
+
+    deleteFavorite(id: ID!): Favorite! @delete
+}
+
+extend type Query {
+    favorites(
+        orderBy: _ @orderBy(columnsEnum: "FavoriteColumns")
+        where: _ @whereConditions(columnsEnum: "FavoriteColumns")
+    ): [Favorite!]! @paginate(type: PAGINATOR, defaultCount: 10)
+
+    favorite(
+        where: _ @whereConditions(columnsEnum: "FavoriteColumns")
+    ): Favorite @first
+}
+
+type Favorite {
+    id: ID!
+    favoriteable_id: Int!
+    favoriteable_type: String!
+    user: User @belongsTo
+    deleted_at: DateTime
+    created_at: DateTime
+    updated_at: DateTime
+    ad: Ad @morphTo(relation: "favoriteable")
+}
+
+input CreateFavoriteInput {
+    favoriteable_id: Int!
+    favoriteable_type: AdFavoriteType!
+    user: CreateUserBelongsTo
+}
+enum AdFavoriteType {
+    ad
+}
